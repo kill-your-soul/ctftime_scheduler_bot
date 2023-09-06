@@ -1,0 +1,1 @@
+# ctftime scheduler bot for sending reminders about upcoming CTFs
