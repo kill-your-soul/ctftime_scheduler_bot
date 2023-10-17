@@ -47,6 +47,17 @@ docker build -t ctftime_scheduler_bot .
 
 2. Run the container
 ```bash
-
 docker run --env TOKEN='<your_token>' --env CHAT_ID='<your_chat_id>' --env MESSAGE_THREAD_ID=<your_message_thread_id> ctftime_sch
+```
+
+## Run via Docker Compose
+
+1. Copy and edit example.env
+```bash
+cp example.env .env
+```
+
+2. Run the container
+```bash
+docker-compose up -d
 ```
