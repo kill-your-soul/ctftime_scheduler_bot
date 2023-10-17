@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    environment:
+      - TOKEN=${TOKEN}
+      - CHAT_ID=${CHAT_ID}
+      - MESSAGE_THREAD_ID=${MESSAGE_THREAD_ID}

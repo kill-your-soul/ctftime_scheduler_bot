@@ -51,7 +51,7 @@ async def send_message(bot: Bot, json):
 if __name__ == '__main__':
     TOKEN = os.environ.get('TOKEN')
     CHAT_ID = os.environ.get('CHAT_ID')
-    MESSAGE_THREAD_ID = os.environ.get('MESSAGE_THREAD_ID')
+    MESSAGE_THREAD_ID: str | None = os.environ.get('MESSAGE_THREAD_ID')
     print(f'CHAT_ID: {CHAT_ID} MESSAGE_THREAD_ID: {MESSAGE_THREAD_ID}')
     try:
         asyncio.run(main())
