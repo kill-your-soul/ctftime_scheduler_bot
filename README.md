@@ -3,6 +3,7 @@
 ## Prerequisites
 1. [Git](https://git-scm.com/)
 2. [Python 3.8+](https://www.python.org/downloads/)
+3. [Docker](https://www.docker.com/) (optional)
 
 ## Installation
 
