@@ -13,11 +13,11 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 async def main():
     await bot()
-    # schenduler = AsyncIOScheduler()
-    # schenduler.add_job(bot, 'interval', days=7)
-    # schenduler.start()
-    # while True:
-        # await asyncio.sleep(1)
+    schenduler = AsyncIOScheduler()
+    schenduler.add_job(bot, 'interval', days=7)
+    schenduler.start()
+    while True:
+        await asyncio.sleep(1)
 
 async def bot():
     headers = {"Host": "ctftime.org"}
