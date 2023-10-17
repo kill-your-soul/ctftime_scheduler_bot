@@ -1,5 +1,5 @@
-# ctftime scheduler bot for sending reminders about upcoming CTFs
-
+# ctftime scheduler bot 
+ctftime.org scheduler bot for sending reminders about upcoming CTFs
 ## Prerequisites
 1. [Git](https://git-scm.com/)
 2. [Python 3.8+](https://www.python.org/downloads/)
