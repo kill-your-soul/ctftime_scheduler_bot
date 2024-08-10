@@ -43,13 +43,13 @@ async def bot():
 
 
 async def send_message(bot: Bot, json):
-    date_object = date_object.astimezone(timezone('Europe/Moscow'))
+    # date_object = date_object.astimezone(timezone('Europe/Moscow'))
     start_time = datetime.fromisoformat(json["start"].replace("Z", "+00:00")).astimezone(timezone('Europe/Moscow')).strftime("%A, %d %B %Y %H:%M")
     end_time = datetime.fromisoformat(json["finish"].replace("Z", "+00:00")).astimezone(timezone('Europe/Moscow')).strftime("%A, %d %B %Y %H:%M")
     message = f'{json["title"]} {start_time} {end_time}\n\t\t\t\t\t\tUrl: {json["url"]}\n\t\t\t\t\t\tctftime url: {json["ctftime_url"]}\n\t\t\t\t\t\tFormat: {json["format"]}\n\t\t\t\t\t\tWeight: {json["weight"]}\n\t\t\t\t\t\tDuration: {json["duration"]["days"]} days {json["duration"]["hours"]} hours\n<a href="{json["logo"]}"></a>'
     print(message)
     await bot.send_photo(
-        CHAT_ID, photo=json["logo"], caption=message, message_thread_id=3
+        CHAT_ID, photo=json["logo"], caption=message, message_thread_id=MESSAGE_THREAD_ID
     )
 
 
