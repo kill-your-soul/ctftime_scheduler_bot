@@ -11,7 +11,12 @@ python = "^3.10"
 requests = "^2.31.0"
 aiogram = "^3.0.0"
 apscheduler = "^3.10.4"
-black = "^23.11.0"
+pydantic = "^2.8.2"
+pydantic-settings = "^2.4.0"
+loguru = "^0.7.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.8.0"
 
 
 [build-system]

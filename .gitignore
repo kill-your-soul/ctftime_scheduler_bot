@@ -1,3 +1,4 @@
 .venv/
 .env
-./ctftime_sch/test.py
+ctftime_sch/test.py
+**/__pycache__/**
