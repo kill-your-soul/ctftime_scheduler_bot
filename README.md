@@ -36,7 +36,7 @@ set MESSAGE_THREAD_ID=<your_message_thread_id>
 
 6. Run the bot
 ```bash
-python3 ctftime_sch/main.py
+python3 src/main.py
 ```
 
 ## Run via Docker

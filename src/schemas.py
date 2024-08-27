@@ -20,7 +20,7 @@ class CTFTimeEvent(BaseModel):
     weight: Annotated[float, Field(strict=True, ge=0)]
     duration: Duration
     live_feed: Optional[str]
-    logo: HttpUrl
+    logo: Optional[str] # TODO: Make this a Optional URL (idk why ctftime sometimes doesn't return a logo url)
     id: Annotated[int, Field(strict=True, ge=0)]
     title: str
     start: datetime
@@ -43,3 +43,4 @@ class CTFTimeResponse(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.events=}"
+    

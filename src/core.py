@@ -1,5 +1,5 @@
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     TOKEN: str
     CHAT_ID: str
-    MESSAGE_THREAD_ID: str
-
+    MESSAGE_THREAD_ID: Optional[str]
+    REDIS_HOST: str
 
 settings = Settings()

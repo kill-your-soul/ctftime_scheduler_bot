@@ -1,68 +1,71 @@
+import logging
+from pathlib import Path
+from typing import NoReturn
 import requests
 from datetime import datetime, timedelta
-from aiogram import Bot
+from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.fsm.storage.redis import RedisStorage, Redis
 from loguru import logger
 import sys
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pytz import timezone
-from src.core import settings
+from core import settings
 from schemas import CTFTimeEvent, CTFTimeResponse
+import handlers
+from events import get_events, send_ctf_time_event
 
 
-async def main():
-    await schedule()
+def setup_handlers(dp: Dispatcher):
+    dp.include_router(handlers.setup_handlers())
+
+
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        level = logger.level(record.levelname).name
+        logger.log(level, record.getMessage())
+
+
+@logger.catch
+async def main(bot: Bot) -> NoReturn:
+    # logging.getLogger("aiogram").setLevel(logging.DEBUG)
+    # logging.getLogger("aiogram").addHandler(InterceptHandler())
+    # logging.getLogger("asyncio").setLevel(logging.DEBUG)
+    # logging.getLogger("asyncio").addHandler(InterceptHandler())
+    base_dir = Path(__file__).resolve().parent.parent
+    logger.add(base_dir / "logs.log", level="DEBUG")
+    redis = Redis(host=settings.REDIS_HOST)
+    storage = RedisStorage(redis)
+    dp = Dispatcher(storage=storage)
+    setup_handlers(dp)
+    await schedule(bot)
     logger.info("Starting bot")
-    schenduler = AsyncIOScheduler()
-    schenduler.add_job(schedule, "interval", days=7)
-    schenduler.start()
-    while True:
-        await asyncio.sleep(1)
+    
+    # schenduler.add_job(schedule, "interval", days=7)
+    await dp.start_polling(bot)
+    # while True:
+    #     await asyncio.sleep(1)
 
 
-async def schedule():
-    headers = {"Host": "ctftime.org"}
-    bot = Bot(settings.TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    start = datetime.now()
-    end = start + timedelta(7)
-    end = int(end.timestamp())
-    start = int(start.timestamp())
-    url = f"http://ctftime.org/api/v1/events/?limit=100&start={start}&finish={end}"
-    session = requests.Session()
-    req = requests.Request("GET", url=url, headers=headers).prepare()
-    response = session.send(request=req)
-    ctftime: CTFTimeResponse = CTFTimeResponse(events=response.json())
+async def schedule(bot: Bot):
+    ctftime: CTFTimeResponse = await get_events(start=datetime.now(), end=datetime.now() + timedelta(7))
     for event in ctftime.events:
         try:
-            await send_message(bot, event)
+            await send_ctf_time_event(bot, event, settings.CHAT_ID, settings.MESSAGE_THREAD_ID)
         except Exception as e:
             print(e)
             continue
-    session.close()
 
-
-async def send_message(bot: Bot, event: CTFTimeEvent):
-    start_time = event.start.astimezone(timezone("Europe/Moscow")).strftime("%A, %d %B %Y %H:%M")
-    end_time = event.finish.astimezone(timezone("Europe/Moscow")).strftime("%A, %d %B %Y %H:%M")
-
-    print(start_time)
-    print(end_time)
-
-
-# async def send_message(bot: Bot, json):
-#     start_time = datetime.fromisoformat(json["start"].replace("Z", "+00:00")).astimezone(timezone('Europe/Moscow')).strftime("%A, %d %B %Y %H:%M")
-#     end_time = datetime.fromisoformat(json["finish"].replace("Z", "+00:00")).astimezone(timezone('Europe/Moscow')).strftime("%A, %d %B %Y %H:%M")
-#     message = f'{json["title"]} {start_time} {end_time}\n\t\t\t\t\t\tUrl: {json["url"]}\n\t\t\t\t\t\tctftime url: {json["ctftime_url"]}\n\t\t\t\t\t\tFormat: {json["format"]}\n\t\t\t\t\t\tWeight: {json["weight"]}\n\t\t\t\t\t\tDuration: {json["duration"]["days"]} days {json["duration"]["hours"]} hours\n<a href="{json["logo"]}"></a>'
-#     print(message)
-#     await bot.send_photo(
-#         settings.CHAT_ID, photo=json["logo"], caption=message, message_thread_id=settings.MESSAGE_THREAD_ID
-#     )
 
 
 if __name__ == "__main__":
+    bot = Bot(settings.TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    schenduler = AsyncIOScheduler()
+    schenduler.add_job(schedule, "interval", days=7, args=(bot,))
+    schenduler.start()
     try:
-        asyncio.run(main())
+        asyncio.run(main(bot))
     except KeyboardInterrupt:
         sys.exit(0)

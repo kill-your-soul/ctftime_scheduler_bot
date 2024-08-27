@@ -2,3 +2,4 @@
 .env
 ctftime_sch/test.py
 **/__pycache__/**
+.vscode/

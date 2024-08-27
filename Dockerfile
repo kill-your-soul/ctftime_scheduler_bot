@@ -18,4 +18,4 @@ COPY --from=builder /builder/wheels /app/wheels
 COPY --from=builder /builder/requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip
 RUN pip install --no-cache /app/wheels/*
-ENTRYPOINT [ "python", "ctftime_sch/main.py" ]
+ENTRYPOINT [ "python", "main.py" ]
