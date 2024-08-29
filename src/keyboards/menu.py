@@ -6,7 +6,6 @@ from aiogram.utils.keyboard import (
 
 def main_menu() -> ReplyKeyboardMarkup:
     builder = ReplyKeyboardBuilder()
-    # builder.button(text="📅 Upcoming CTFs")
     builder.button(text="☀️ Today")
     builder.button(text="📆 Next week")
     builder.button(text="🈷️ Next month")

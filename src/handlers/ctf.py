@@ -1,14 +1,13 @@
 from datetime import datetime, timedelta
-from loguru import logger
-from pytz import timezone
-from aiogram.types import Message, InlineQuery
-from aiogram.types.inline_query_result_photo import InlineQueryResultPhoto
+
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
 
-from keyboards.menu import main_menu, back_button
 from events import get_events, send_ctf_time_event, send_ctf_time_event_split
+from keyboards.menu import back_button, main_menu
 
-async def start_handler(message: Message, state: FSMContext):
+
+async def start_handler(message: Message, _state: FSMContext) -> None:
     keyboard = main_menu()
     await message.answer("Hello! I am a bot that will send you information about upcoming CTF events.", reply_markup=keyboard)
 
@@ -35,7 +34,7 @@ async def start_handler(message: Message, state: FSMContext):
 #     await message.answer("That's all. Choose wisely", reply_markup=keyboard)
 
 
-async def upcoming_today_ctf(message: Message, state: FSMContext):
+async def upcoming_today_ctf(message: Message, _state: FSMContext) -> None:
     ctftime = await get_events(start=datetime.now(), end=datetime.now() + timedelta(1))
     keyboard = back_button()
     if len(ctftime.events) == 0:
@@ -44,7 +43,7 @@ async def upcoming_today_ctf(message: Message, state: FSMContext):
         await send_ctf_time_event(message.bot, event, message.chat.id)
     await message.answer("That's all. Choose wisely", reply_markup=keyboard)
 
-async def upcoming_week_ctfs(message: Message, state: FSMContext):
+async def upcoming_week_ctfs(message: Message, _state: FSMContext) -> None:
     ctftime = await get_events(start=datetime.now(), end=datetime.now() + timedelta(7))
     keyboard = back_button()
     if len(ctftime.events) == 0:
@@ -53,15 +52,14 @@ async def upcoming_week_ctfs(message: Message, state: FSMContext):
         await send_ctf_time_event(message.bot, event, message.chat.id)
     await message.answer("That's all. Choose wisely", reply_markup=keyboard)
 
-async def upcoming_month_ctfs(message: Message, state: FSMContext):
+async def upcoming_month_ctfs(message: Message, _state: FSMContext) -> None:
     ctftime = await get_events(start=datetime.now(), end=datetime.now() + timedelta(30))
     keyboard = back_button()
     if len(ctftime.events) == 0:
         await message.answer("No events this month")
-    
     await send_ctf_time_event_split(message.bot, ctftime.events, message.chat.id)
     await message.answer("That's all. Choose wisely", reply_markup=keyboard)
 
-async def back(message: Message, state: FSMContext):
+async def back(message: Message, _state: FSMContext) -> None:
     keyboard = main_menu()
     await message.answer("Main menu", reply_markup=keyboard)

@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import Annotated, Optional
-from pydantic import BaseModel, HttpUrl, Field
+from typing import Annotated
+
+from pydantic import BaseModel, Field, HttpUrl
 
 
 class Organizer(BaseModel):
@@ -19,21 +20,23 @@ class CTFTimeEvent(BaseModel):
     ctf_id: Annotated[int, Field(strict=True, ge=1)]
     weight: Annotated[float, Field(strict=True, ge=0)]
     duration: Duration
-    live_feed: Optional[str]
-    logo: Optional[str] # TODO: Make this a Optional URL (idk why ctftime sometimes doesn't return a logo url)
+    live_feed: str | None
+    logo: (
+        str | None
+    )  # TODO @kill_your_soul: Make this a Optional URL (idk why ctftime sometimes doesn't return a logo url)
     id: Annotated[int, Field(strict=True, ge=0)]
     title: str
     start: datetime
     participants: Annotated[int, Field(strict=True, ge=0)]
-    location: Optional[str]
+    location: str | None
     finish: datetime
-    description: Optional[str]
+    description: str | None
     format: str
     is_votable_now: bool
-    prizes: Optional[str]
+    prizes: str | None
     format_id: Annotated[int, Field(strict=True, ge=0)]
     onsite: bool
-    restrictions: Optional[str]
+    restrictions: str | None
     url: HttpUrl
     public_votable: bool
 
@@ -43,4 +46,3 @@ class CTFTimeResponse(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.events=}"
-    
